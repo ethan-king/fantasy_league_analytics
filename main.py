@@ -1,19 +1,27 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
 from yahoo_oauth import OAuth2
 import yahoo_fantasy_api as yfa
+import pandas as pd
+
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+'''
+Questions to answer:
+Best draft (actual point production for the season) - drafted team with highest point total by week 16
+Best waiver wire transactions - players added outperformed players dropped
+Best roster setter - plays the right players
 
+Players who outperformed their draft position
+'''
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     oauth = OAuth2(None, None, from_file='./secrets/private.json')
     gm = yfa.Game(oauth, 'nfl')
-    gm.league_ids(2020)
+    LEAGUE_ID_2020 = gm.league_ids(2020)[0]
+    lg = gm.to_league(LEAGUE_ID_2020)
+    trades = lg.transactions('trade', '')
+    waivers_add = lg.transactions('add','')
+    waivers_drop = lg.transactions('drop','')
